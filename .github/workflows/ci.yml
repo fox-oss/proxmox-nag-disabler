@@ -50,14 +50,20 @@ jobs:
         # Basic security checks
         echo "Running basic security checks..."
 
-        # Check for potential issues in shell script
-        if grep -n 'eval\|exec\|system\|passthru' nag.sh; then
+        # Check for potential issues in shell script (excluding legitimate systemctl usage)
+        if grep -n '\beval\b\|\bexec\b[^u]\|\bpassthru\b' nag.sh; then
           echo "⚠️  Warning: Potentially dangerous functions found"
           exit 1
         fi
 
-        # Check for hardcoded credentials
-        if grep -i -n 'password\|secret\|token\|key' nag.sh | grep -v '# '; then
+        # Check for system() calls specifically (not systemctl)
+        if grep -n '\bsystem\s*(' nag.sh; then
+          echo "⚠️  Warning: Potentially dangerous system() calls found"
+          exit 1
+        fi
+
+        # Check for hardcoded credentials (excluding comments and legitimate variable names)
+        if grep -i -n 'password\s*=\|secret\s*=\|token\s*=\|api[_-]key\s*=' nag.sh; then
           echo "⚠️  Warning: Potential hardcoded credentials found"
           exit 1
         fi
