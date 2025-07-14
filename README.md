@@ -59,11 +59,36 @@ curl -fsSL https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/n
 
 The script will:
 
+- Convert to community repositories (if needed)
 - Build a dpkg trigger package
 - Install the package
 - Apply the nag removal patch
 - Restart the pveproxy service
 - Verify the installation
+
+## 🛠️ Advanced Usage
+
+### Nag Removal Only
+
+If you've already converted to community repositories and only want to install the nag disabler:
+
+```bash
+sudo ./nag.sh --nag-only
+```
+
+### Community Repository Conversion Only
+
+To only convert from Proxmox VE enterprise repositories to community repositories (without installing the nag disabler):
+
+```bash
+sudo ./nag.sh --community
+```
+
+This will:
+
+- Comment out enterprise repository entries
+- Create community repository files with matching versions
+- Update package lists to verify configuration
 
 ## 🗑️ Uninstallation
 

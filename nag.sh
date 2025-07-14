@@ -7,8 +7,10 @@
 #           is upgraded.
 #
 #  USAGE
-#      sudo ./nag.sh # install / update
+#      sudo ./nag.sh # convert to community + install nag disabler
+#      sudo ./nag.sh --nag-only # install nag disabler only (if already on community)
 #      sudo ./nag.sh --uninstall # purge package
+#      sudo ./nag.sh --community # convert to community repos only
 #================================================================
 
 set -euo pipefail
@@ -126,6 +128,78 @@ self_test() {
 }
 
 #------------------------------------------------------#
+#  Convert to community repositories                   #
+#------------------------------------------------------#
+
+convert_to_community() {
+  log_info "Converting to Proxmox VE community repositories …"
+
+  # Comment out enterprise repositories
+  if [[ -f /etc/apt/sources.list.d/pve-enterprise.list ]]; then
+    sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/pve-enterprise.list
+    log_ok "Commented out PVE enterprise repository"
+  fi
+
+  if [[ -f /etc/apt/sources.list.d/ceph.list ]]; then
+    sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/ceph.list
+    log_ok "Commented out Ceph enterprise repository"
+  fi
+
+  # Create community PVE repository
+  local pve_community="/etc/apt/sources.list.d/pve-community.list"
+  if [[ ! -f "$pve_community" ]] || ! grep -q "pve-no-subscription" "$pve_community" 2>/dev/null; then
+    # Extract codename from enterprise repo or use default
+    local codename="bookworm"
+    if [[ -f /etc/apt/sources.list.d/pve-enterprise.list ]]; then
+      codename=$(grep -E "^#?deb.*enterprise.proxmox.com.*pve" /etc/apt/sources.list.d/pve-enterprise.list | head -1 | awk '{print $3}' || echo "bookworm")
+    fi
+
+    cat > "$pve_community" <<EOF
+# PVE Community Repository
+deb http://download.proxmox.com/debian/pve $codename pve-no-subscription
+EOF
+    log_ok "Created PVE community repository ($codename)"
+  else
+    log_ok "PVE community repository already exists"
+  fi
+
+  # Create community Ceph repository
+  local ceph_community="/etc/apt/sources.list.d/ceph-community.list"
+  if [[ ! -f "$ceph_community" ]] || ! grep -q "no-subscription" "$ceph_community" 2>/dev/null; then
+    # Extract codename and ceph version from enterprise repo or use defaults
+    local codename="bookworm"
+    local ceph_version="quincy"
+    if [[ -f /etc/apt/sources.list.d/ceph.list ]]; then
+      local ceph_line
+      ceph_line=$(grep -E "^#?deb.*enterprise.proxmox.com.*ceph" /etc/apt/sources.list.d/ceph.list | head -1)
+      if [[ -n "$ceph_line" ]]; then
+        codename=$(echo "$ceph_line" | awk '{print $3}' || echo "bookworm")
+        ceph_version=$(echo "$ceph_line" | grep -o 'ceph-[^[:space:]]*' | sed 's/ceph-//' || echo "quincy")
+      fi
+    fi
+
+    cat > "$ceph_community" <<EOF
+# Ceph Community Repository
+deb http://download.proxmox.com/debian/ceph-$ceph_version $codename no-subscription
+EOF
+    log_ok "Created Ceph community repository ($ceph_version/$codename)"
+  else
+    log_ok "Ceph community repository already exists"
+  fi
+
+  # Update package lists
+  log_info "Updating package lists …"
+  if apt-get update -qq; then
+    log_ok "Package lists updated successfully"
+  else
+    log_err "Failed to update package lists - please check repository configuration"
+    exit 1
+  fi
+
+  log_ok "Successfully converted to community repositories"
+}
+
+#------------------------------------------------------#
 #  Uninstall                                           #
 #------------------------------------------------------#
 
@@ -146,11 +220,20 @@ case "${1:-}" in
   --uninstall)
         uninstall_pkg
         ;;
+  --community)
+        convert_to_community
+        ;;
+  --nag-only)
+        build_pkg
+        install_pkg
+        self_test
+        ;;
   "")
+        convert_to_community
         build_pkg
         install_pkg
         self_test
         ;;
   *)
-        log_err "Unknown option: $1  (only --uninstall)"; exit 1 ;;
+        log_err "Unknown option: $1  (use --nag-only, --community, or --uninstall)"; exit 1 ;;
 esac
