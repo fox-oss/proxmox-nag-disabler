@@ -1,0 +1,86 @@
+repos:
+  # Shell script linting
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: ShellCheck
+        entry: shellcheck
+        language: system
+        args: [--severity=warning]
+        types: [shell]
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: check-yaml
+        name: Check YAML syntax
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+        name: Check for case conflicts
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+      - id: check-executables-have-shebangs
+        name: Check executables have shebangs
+      - id: check-shebang-scripts-are-executable
+        name: Check shebang scripts are executable
+      - id: mixed-line-ending
+        name: Check mixed line endings
+        args: ['--fix=lf']
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.45.0
+    hooks:
+      - id: markdownlint
+        name: Markdown lint
+        args: ['--config', '.markdownlint.json']
+
+  # Commit message linting
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.22.0
+    hooks:
+      - id: commitlint
+        name: Commit message lint
+        stages: [commit-msg]
+        additional_dependencies: ['@commitlint/config-conventional']
+
+  # Security checks for shell scripts
+  - repo: local
+    hooks:
+      - id: bash-security-check
+        name: Bash security check
+        entry: bash
+        language: system
+        args:
+          - -c
+          - |
+            # Basic security checks for shell scripts
+            for file in "$@"; do
+              if [[ "$file" == *.sh ]]; then
+                echo "Checking $file for basic security issues..."
+
+                # Check for potential command injection vulnerabilities
+                if grep -nH '\$(' "$file" | grep -v '"\$(' | head -5; then
+                  echo "Warning: Potential command injection in $file (unquoted command substitution)"
+                fi
+
+                # Check for eval usage
+                if grep -nH 'eval' "$file"; then
+                  echo "Warning: eval usage found in $file - review for security"
+                fi
+
+                # Check for curl/wget without SSL verification
+                if grep -nH -E '(curl|wget).*(-k|--insecure|--no-check-certificate)' "$file"; then
+                  echo "Warning: Insecure HTTP download in $file"
+                fi
+              fi
+            done
+        files: \.sh$
+        pass_filenames: true

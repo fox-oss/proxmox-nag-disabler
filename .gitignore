@@ -1,0 +1,66 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Build artifacts
+*.deb
+*.rpm
+*.tar.gz
+*.tar.bz2
+*.zip
+
+# Package manager directories
+node_modules/
+.npm/
+.yarn/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Shell history
+.bash_history
+.zsh_history
+
+# Test outputs
+test-results/
+coverage/
+
+# Local development
+.local/
+.cache/
+
+# Debian package build artifacts
+debian/files
+debian/substvars
+debian/*.debhelper
+debian/*.debhelper.log
+debian/tmp/
