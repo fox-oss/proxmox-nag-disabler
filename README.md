@@ -4,16 +4,16 @@
 
 A robust solution to permanently disable the Proxmox VE subscription nag screen using a dpkg trigger package that automatically re-applies the patch whenever `proxmox-widget-toolkit` is upgraded.
 
-__Using wget:__
-
-```bash
-wget -qO- https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash
-```
-
-__Using curl:__
+Using curl:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash
+```
+
+Using wget:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash
 ```
 
 ## 🚀 Features
