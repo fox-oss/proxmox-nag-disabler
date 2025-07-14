@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #================================================================
-#  pve-nonag-trigger.sh ─ Build & install a dpkg-trigger package
-#                         that permanently removes the Proxmox
-#                         "subscription nag" and re-applies the
-#                         patch whenever proxmox-widget-toolkit
-#                         is upgraded.
+#  nag.sh ─ Build & install a dpkg-trigger package
+#           that permanently removes the Proxmox
+#           "subscription nag" and re-applies the
+#           patch whenever proxmox-widget-toolkit
+#           is upgraded.
 #
 #  USAGE
-#      sudo ./pve-nonag-trigger.sh # install / update
-#      sudo ./pve-nonag-trigger.sh --uninstall # purge package
+#      sudo ./nag.sh # install / update
+#      sudo ./nag.sh --uninstall # purge package
 #================================================================
 
 set -euo pipefail

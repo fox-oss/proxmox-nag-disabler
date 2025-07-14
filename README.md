@@ -67,6 +67,24 @@ The script will:
 
 ## 🗑️ Uninstallation
 
+### Quick Uninstall (One-liner)
+
+For a quick uninstallation, you can use one of these one-liner commands:
+
+__Using wget:__
+
+```bash
+wget -qO- https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash -s -- --uninstall
+```
+
+__Using curl:__
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash -s -- --uninstall
+```
+
+### Manual Uninstall
+
 To remove the package and restore the original Proxmox files:
 
 ```bash
