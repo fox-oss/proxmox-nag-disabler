@@ -7,10 +7,9 @@
 #           is upgraded.
 #
 #  USAGE
-#      sudo ./nag.sh # convert to community + install nag disabler
-#      sudo ./nag.sh --nag-only # install nag disabler only (if already on community)
+#      sudo ./nag.sh # install nag disabler
+#      sudo ./nag.sh --community # convert to community repos + install nag disabler
 #      sudo ./nag.sh --uninstall # purge package
-#      sudo ./nag.sh --community # convert to community repos only
 #================================================================
 
 set -euo pipefail
@@ -222,18 +221,15 @@ case "${1:-}" in
         ;;
   --community)
         convert_to_community
-        ;;
-  --nag-only)
         build_pkg
         install_pkg
         self_test
         ;;
   "")
-        convert_to_community
         build_pkg
         install_pkg
         self_test
         ;;
   *)
-        log_err "Unknown option: $1  (use --nag-only, --community, or --uninstall)"; exit 1 ;;
+        log_err "Unknown option: $1  (use --community or --uninstall)"; exit 1 ;;
 esac
