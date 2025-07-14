@@ -19,7 +19,7 @@ readonly SELF="${0##*/}"
 WORKDIR="$(mktemp -d)"
 readonly WORKDIR
 readonly PKGNAME='pve-nonag-trigger'
-readonly VERSION='1.0'
+readonly VERSION='1.1.0'
 readonly DEBDIR="$WORKDIR/$PKGNAME/DEBIAN"
 readonly PREFIX="$WORKDIR/$PKGNAME/usr/local"
 readonly PATCHER="$PREFIX/bin/pve-nonag-patch.sh"
