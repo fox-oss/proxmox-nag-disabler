@@ -30,7 +30,7 @@ jobs:
       run: shellcheck nag.sh
 
     - name: Run Markdown lint
-      run: markdownlint README.md CONTRIBUTING.md --config .markdownlint.yaml
+      run: markdownlint README.md CONTRIBUTING.md --config .markdownlint.json
 
     - name: Validate commit messages (PR only)
       if: github.event_name == 'pull_request'
