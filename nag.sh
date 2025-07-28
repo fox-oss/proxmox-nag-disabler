@@ -18,7 +18,7 @@ readonly SELF="${0##*/}"
 WORKDIR="$(mktemp -d)"
 readonly WORKDIR
 readonly PKGNAME='pve-nonag-trigger'
-readonly VERSION='1.1.0'
+readonly VERSION='1.1.1'
 readonly DEBDIR="$WORKDIR/$PKGNAME/DEBIAN"
 readonly PREFIX="$WORKDIR/$PKGNAME/usr/local"
 readonly PATCHER="$PREFIX/bin/pve-nonag-patch.sh"
@@ -70,22 +70,85 @@ exit 0
 EOF
   chmod 755 "$DEBDIR/postinst"
 
-  #── patcher script (your verified sed logic)
+  #── patcher script (reliable approach based on working disable_nag function)
   cat > "$PATCHER" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 PATTERN=nag_screen_removed
-patch() {
-  local file="$1" expr="$2"
-  grep -qF "//$PATTERN" "$file" && return
-  cp -n -- "$file" "${file}.backup"
-  sed -i.backup -z "$expr" "$file"
-  printf '\n//%s\n' "$PATTERN" >> "$file"
+
+log() { printf '%s %s\n' "$1" "$2"; }
+log_ok() { log '✓' "$1"; }
+log_info() { log '-' "$1"; }
+log_err() { log '✗' "$1"; }
+
+disable_nag() {
+    local nag_file="$1"
+    local description="$2"
+    local script_name="pve-nonag-patch"
+    
+    # Check if already patched
+    if grep -qs "//$PATTERN" "$nag_file" >/dev/null 2>&1; then
+        log_ok "$description already patched"
+        return 0
+    fi
+    
+    # Check if file exists
+    if [[ ! -f "$nag_file" ]]; then
+        log_err "$description not found: $nag_file"
+        return 1
+    fi
+
+    log_info "$script_name: Processing $description ..."
+    
+    local changes_made=false
+    
+    # For main JS file - look for subscription check patterns
+    if [[ "$nag_file" == *"proxmoxlib.js" ]]; then
+        # Pattern 1: res.data.status.toLowerCase() !== 'active'
+        if grep -qs "res.data.status.toLowerCase() !== 'active'" "$nag_file"; then
+            sed -i.orig "s/res.data.status.toLowerCase() !== 'active'/false/g" "$nag_file"
+            changes_made=true
+            log_info "Fixed main subscription check"
+        fi
+        
+        # Pattern 2: .data.status.toLowerCase() !== 'active' (more general)
+        if grep -qs ".data.status.toLowerCase() !== 'active'" "$nag_file"; then
+            sed -i.orig "s/.data.status.toLowerCase() !== 'active'/false/g" "$nag_file"
+            changes_made=true
+            log_info "Fixed additional subscription checks"
+        fi
+    fi
+    
+    # For minified JS file
+    if [[ "$nag_file" == *"proxmoxlib.min.js" ]]; then
+        # Pattern 1: "active"!==e.data.status.toLowerCase()
+        if grep -qs '"active"!==.*\.data\.status\.toLowerCase()' "$nag_file"; then
+            sed -i.orig 's/"active"!==[^.]*\.data\.status\.toLowerCase()/false/g' "$nag_file"
+            changes_made=true
+            log_info "Fixed minified subscription check (pattern 1)"
+        fi
+        
+        # Pattern 2: "active"===e.data.status.toLowerCase()
+        if grep -qs '"active"===.*\.data\.status\.toLowerCase()' "$nag_file"; then
+            sed -i.orig 's/"active"===[^.]*\.data\.status\.toLowerCase()/true/g' "$nag_file"
+            changes_made=true
+            log_info "Fixed minified subscription check (pattern 2)"
+        fi
+    fi
+    
+    if [[ "$changes_made" == "true" ]]; then
+        printf '\n//%s\n' "$PATTERN" >> "$nag_file"
+        log_ok "$description patched successfully"
+        return 0
+    else
+        log_info "$description - no subscription patterns found to patch"
+        return 0
+    fi
 }
-patch /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js \
-      "s@res === null || res === undefined || \\!res || res\n\t\t\t.data.status.toLowerCase() \\!== 'active'@false@g"
-patch /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.min.js \
-      's@null=\\!e||\\!e.data||\"active\"!==e.data.status.toLowerCase()@false@g'
+
+# Apply the nag disabler to both JS files
+disable_nag "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js" "Main JS file"
+disable_nag "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.min.js" "Minified JS file"
 EOF
   chmod 755 "$PATCHER"
 

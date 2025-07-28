@@ -14,5 +14,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backup creation for original files
 - Educational purpose disclaimer
 
-Unreleased: <https://github.com/fox-oss/Proxmox-Nag-Disabler/compare/v1.0.0...HEAD>
-[1.0.0]: <https://github.com/fox-oss/Proxmox-Nag-Disabler/releases/tag/v1.0.0>
+Unreleased: <https://github.com/fox-oss/proxmox-nag-disabler/compare/v1.0.0...HEAD>
+[1.0.0]: <https://github.com/fox-oss/proxmox-nag-disabler/releases/tag/v1.0.0>

@@ -1,4 +1,4 @@
-# Proxmox-Nag-Disabler
+# proxmox-nag-disabler
 
 > __⚠️ Educational Purpose Only__: This tool is intended for educational and learning purposes. Please consider supporting the Proxmox team by purchasing a [subscription](https://www.proxmox.com/en/proxmox-ve/pricing) for production environments.
 
@@ -7,13 +7,13 @@ A robust solution to permanently disable the Proxmox VE subscription nag screen 
 Using curl:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash
+curl -fsSL https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash
 ```
 
 Using wget:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash
+wget -qO- https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash
 ```
 
 ## 🚀 Features
@@ -41,8 +41,8 @@ For a quick installation, see above.
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/fox-oss/Proxmox-Nag-Disabler.git
-   cd Proxmox-Nag-Disabler
+   git clone https://github.com/fox-oss/proxmox-nag-disabler.git
+   cd proxmox-nag-disabler
    ```
 
 2. Make the script executable:
@@ -90,13 +90,13 @@ For a quick uninstallation, you can use one of these one-liner commands:
 __Using wget:__
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash -s -- --uninstall
+wget -qO- https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash -s -- --uninstall
 ```
 
 __Using curl:__
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/fox-oss/Proxmox-Nag-Disabler/main/nag.sh | bash -s -- --uninstall
+curl -fsSL https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash -s -- --uninstall
 ```
 
 ### Manual Uninstall

@@ -1,10 +1,10 @@
-# Contributing to Proxmox-Nag-Disabler
+# Contributing to Proxmox Nag Disabler
 
-Thank you for your interest in contributing to Proxmox-Nag-Disabler! We welcome contributions from the community and are grateful for your help in making this project better.
+Thank you for your interest in contributing to proxmox-nag-disabler! We welcome contributions from the community and are grateful for your help in making this project better.
 
 ## 📋 Table of Contents
 
-- [Contributing to Proxmox-Nag-Disabler](#contributing-to-proxmox-nag-disabler)
+- [Contributing to proxmox-nag-disabler](#contributing-to-proxmox-nag-disabler)
   - [📋 Table of Contents](#-table-of-contents)
   - [Code of Conduct](#code-of-conduct)
   - [Getting Started](#getting-started)
@@ -34,14 +34,14 @@ By participating in this project, you agree to abide by our Code of Conduct. We 
 2. __Clone your fork__ locally:
 
    ```bash
-   git clone https://github.com/your-username/Proxmox-Nag-Disabler.git
-   cd Proxmox-Nag-Disabler
+   git clone https://github.com/your-username/proxmox-nag-disabler.git
+   cd proxmox-nag-disabler
    ```
 
 3. __Add the upstream repository__ as a remote:
 
    ```bash
-   git remote add upstream https://github.com/original-owner/Proxmox-Nag-Disabler.git
+   git remote add upstream https://github.com/original-owner/proxmox-nag-disabler.git
    ```
 
 ## Development Setup
@@ -203,4 +203,4 @@ If you have questions about contributing, please:
 2. Open a new issue with the "question" label
 3. Be patient - we're volunteers!
 
-Thank you for contributing to Proxmox-Nag-Disabler! 🚀
+Thank you for contributing to proxmox-nag-disabler! 🚀
