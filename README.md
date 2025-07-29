@@ -10,11 +10,21 @@ Using curl:
 curl -fsSL https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash
 ```
 
-Using wget:
+## 🛠️ Advanced Usage
+
+### Community Repository Conversion + Nag Removal
+
+To convert from Proxmox VE enterprise repositories to community repositories AND install the nag disabler:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash
+curl -fsSL https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash -s -- --community
 ```
+
+This will:
+
+- Comment out enterprise repository entries
+- Create community repository files with matching versions
+- Update package lists to verify configuration
 
 ## 🚀 Features
 
@@ -65,33 +75,11 @@ The script will:
 - Restart the pveproxy service
 - Verify the installation
 
-## 🛠️ Advanced Usage
-
-### Community Repository Conversion + Nag Removal
-
-To convert from Proxmox VE enterprise repositories to community repositories AND install the nag disabler:
-
-```bash
-sudo ./nag.sh --community
-```
-
-This will:
-
-- Comment out enterprise repository entries
-- Create community repository files with matching versions
-- Update package lists to verify configuration
-
 ## 🗑️ Uninstallation
 
 ### Quick Uninstall (One-liner)
 
 For a quick uninstallation, you can use one of these one-liner commands:
-
-__Using wget:__
-
-```bash
-wget -qO- https://raw.githubusercontent.com/fox-oss/proxmox-nag-disabler/main/nag.sh | bash -s -- --uninstall
-```
 
 __Using curl:__
 
